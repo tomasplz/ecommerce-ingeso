@@ -1,6 +1,15 @@
 services:
   # ---------- FRONTEND (React) ----------
 
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+    - backend
+    ports:
+      - "80:80"
+    networks:
+    - app-network
 
   # ---------- BACKEND (NestJS) ----------
 
