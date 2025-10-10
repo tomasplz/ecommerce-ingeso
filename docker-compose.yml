@@ -1,14 +1,15 @@
 services:
   # ---------- FRONTEND (React) ----------
+
   frontend:
     build: ./frontend
     restart: unless-stopped
     depends_on:
-      - backend
+    - backend
     ports:
       - "80:80"
     networks:
-      - app-network
+    - app-network
 
   # ---------- BACKEND (NestJS) ----------
 
@@ -24,6 +25,15 @@ services:
       - "3000:3000"
     networks:
       - app-network
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - MONGO_DB_NAME=${MONGO_DB_NAME}
+      - MONGO_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
+      - MONGO_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
 
 
   # ---------- INFRA ----------
