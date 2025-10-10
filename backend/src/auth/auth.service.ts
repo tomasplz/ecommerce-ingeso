@@ -15,7 +15,7 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usuarioRepository.findOne({ where: { email } });
-    if (user && (await bcrypt.compare(password, user.password)) && user.isAdmin) {
+    if (user && (await bcrypt.compare(password, user.password)) && user.role === 'admin') {
       const { password, ...result } = user;
       return result;
     }

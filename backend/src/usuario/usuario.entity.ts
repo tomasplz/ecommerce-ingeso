@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsIn } from 'class-validator';
 
 @Entity()
 export class Usuario {
@@ -14,6 +14,7 @@ export class Usuario {
   @IsNotEmpty()
   password: string;
 
-  @Column({ default: false })
-  isAdmin: boolean;
+  @Column({ default: 'user' })
+  @IsIn(['admin', 'user'])
+  role: string;
 }
