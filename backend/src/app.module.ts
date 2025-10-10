@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
+import { Usuario } from './usuario/usuario.entity';
 
 @Module({
   imports: [
@@ -10,9 +12,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [],
+      entities: [Usuario],
       synchronize: true,
     }),
+    AuthModule,
   ],
 })
 export class AppModule {}
