@@ -11,8 +11,8 @@ export class ProductosController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createProductoDto: CreateProductoDto, @Request() req) {
-    const usuarioId = +req.user.id;
-    return this.productosService.create(createProductoDto, usuarioId);
+    const vendedorId = +req.user.id;
+    return this.productosService.create(createProductoDto, vendedorId);
   }
 
   @Get()
@@ -23,12 +23,28 @@ export class ProductosController {
   @UseGuards(JwtAuthGuard)
   @Get('mis-productos')
   findByUsuario(@Request() req) {
-    const usuarioId = +req.user.id;
-    return this.productosService.findByUsuario(usuarioId);
+    const vendedorId = +req.user.id;
+    return this.productosService.findByUsuario(vendedorId);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productosService.findOne(+id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateProductoDto: UpdateProductoDto, @Request() req) {
+    const vendedorId = +req.user.id;
+    const isAdmin = req.user.role === 'admin';
+    return this.productosService.update(+id, updateProductoDto, vendedorId, isAdmin);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  remove(@Param('id') id: string, @Request() req) {
+    const vendedorId = +req.user.id;
+    const isAdmin = req.user.role === 'admin';
+    return this.productosService.remove(+id, vendedorId, isAdmin);
   }
 }

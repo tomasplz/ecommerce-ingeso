@@ -11,19 +11,44 @@ datasource db {
 }
 
 model Usuario {
-  id       Int        @id @default(autoincrement())
-  email    String     @unique
-  password String
-  role     String     @default("user")
-  productos Producto[]
+  id                Int        @id @default(autoincrement())
+  email             String     @unique
+  password          String
+  role              String     @default("comprador") // admin, vendedor, comprador
+  productosVendidos Producto[] @relation("Vendedor")
+  pedidos           Pedido[]   @relation("Comprador")
 }
 
 model Producto {
-  id          Int     @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   nombre      String
   descripcion String?
   precio      Float
+  stock       Int           @default(0)
   categoria   String?
-  usuarioId   Int
-  usuario     Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  vendedorId  Int
+  vendedor    Usuario       @relation("Vendedor", fields: [vendedorId], references: [id], onDelete: Cascade)
+  pedidoItems PedidoItem[]
+}
+
+model Pedido {
+  id          Int          @id @default(autoincrement())
+  compradorId Int
+  comprador   Usuario      @relation("Comprador", fields: [compradorId], references: [id], onDelete: Cascade)
+  total       Float
+  estado      String       @default("pendiente") // pendiente, pagado, enviado, entregado, cancelado
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  items       PedidoItem[]
+}
+
+model PedidoItem {
+  id         Int      @id @default(autoincrement())
+  pedidoId   Int
+  pedido     Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  productoId Int
+  producto   Producto @relation(fields: [productoId], references: [id])
+  cantidad   Int
+  precioUnitario Float
+  subtotal   Float
 }

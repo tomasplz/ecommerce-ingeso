@@ -27,7 +27,7 @@ export class AuthService {
     };
   }
 
-  async register(email: string, password: string, role: string = 'user') {
+  async register(email: string, password: string, role: string = 'comprador') {
     // Verificar si el email ya existe
     const existingUser = await this.prisma.usuario.findUnique({ where: { email } });
     if (existingUser) {

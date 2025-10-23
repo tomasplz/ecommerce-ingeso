@@ -13,6 +13,10 @@ export class CreateProductoDto {
   @IsNumber()
   precio: number;
 
+  @IsNotEmpty()
+  @IsNumber()
+  stock: number;
+
   @IsOptional()
   @IsString()
   categoria?: string;

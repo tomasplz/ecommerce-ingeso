@@ -8,6 +8,6 @@ export class RegisterDto {
   password: string;
 
   @IsOptional()
-  @IsIn(['admin', 'user'])
+  @IsIn(['admin', 'vendedor', 'comprador'])
   role?: string;
 }
