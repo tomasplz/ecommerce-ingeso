@@ -1,0 +1,123 @@
+/* Fondo con profundidad */
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top left, #232526, #414345);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Recuadro central */
+.login-box {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  padding: 2rem;
+  width: 340px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+/* Título */
+.login-box h2 {
+  margin-bottom: 1.5rem;
+}
+
+/* Campos de texto */
+.login-box input {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  outline: none;
+}
+
+.login-box input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Botón principal */
+.login-btn {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  background-color: #61dafb;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #4fc0e0;
+}
+
+/* Separador */
+.divider {
+  margin: 1rem 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+/* Botones sociales */
+.social-login {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 1rem;
+}
+
+.google-btn,
+.facebook-btn {
+  flex: 1;
+  padding: 0.5rem 0;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.google-btn {
+  background-color: #db4437;
+}
+
+.facebook-btn {
+  background-color: #3b5998;
+}
+
+.google-btn:hover {
+  background-color: #c33d2f;
+}
+
+.facebook-btn:hover {
+  background-color: #324c85;
+}
+
+/* Enlaces inferiores */
+.login-links {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.login-links a {
+  color: #61dafb;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.login-links a:hover {
+  text-decoration: underline;
+}
