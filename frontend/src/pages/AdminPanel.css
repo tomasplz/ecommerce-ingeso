@@ -144,6 +144,148 @@
   background: #0056b3;
 }
 
+/* Nueva estructura: grid con lista y formulario */
+.admin-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 2rem;
+}
+
+/* Lista de productos */
+.list-section {
+  background: #262626;
+  border-radius: 12px;
+  padding: 1rem;
+  color: #eee;
+  max-height: 720px;
+  overflow: auto;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.empty-list {
+  color: #aaa;
+  padding: 1rem;
+  text-align: center;
+}
+
+.products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.product-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: #2d2d2d;
+  transition: background 0.15s ease;
+}
+
+.product-item:hover {
+  background: #333333;
+}
+
+.thumb {
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #3a3a3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-thumb {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.product-name {
+  font-weight: 600;
+  color: #fff;
+}
+
+.product-price {
+  color: #aeddff;
+  font-size: 0.95rem;
+}
+
+.product-status {
+  color: #ccc;
+  font-size: 0.8rem;
+}
+
+.product-quantity {
+  color: #ffd58a;
+  font-size: 0.95rem;
+}
+
+.actions-col {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 0.5rem; /* espacio entre botones */
+}
+
+/* Botón editar */
+.edit-btn {
+  background: rgba(97, 218, 251, 0.08);
+  border: 1px solid rgba(97, 218, 251, 0.14);
+  color: #61dafb;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.12s ease, transform 0.06s ease;
+}
+
+.edit-btn:hover {
+  background: rgba(97, 218, 251, 0.14);
+  transform: translateY(-1px);
+}
+
+/* Formularios y secciones mantienen estilos anteriores; pequeña adaptación */
+.form-section {
+  /* ...existing code... uses .top-section, .image-section, .info-section, etc. */
+}
+
+/* Responsive: apilar en mobile */
+@media (max-width: 900px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+  .list-section {
+    order: 2;
+  }
+  .form-section {
+    order: 1;
+  }
+}
+
 /* Estilos para placeholder */
 ::placeholder {
   color: #666;

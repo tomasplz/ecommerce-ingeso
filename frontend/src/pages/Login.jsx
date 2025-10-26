@@ -10,13 +10,6 @@ export default function Login() {
     alert(`Bienvenido, ${username}`);
   };
 
-  const handleCancel = (e) => {
-    e.preventDefault();
-    setUsername("");
-    setPassword("");
-    window.location.href = "/admin";
-  };
-
   return (
     <div className="login-wrapper">
       <div className="login-box" style={{ margin: "2rem 0" }}>
@@ -39,22 +32,13 @@ export default function Login() {
             />
           </div>
 
-          <div className="actions">
-            <button
-              type="submit"
-              className="login-btn"
-              style={{ fontSize: "1.1rem" }}
-            >
-              Ingresar
-            </button>
-            <button
-              type="button"
-              className="cancel-btn"
-              onClick={handleCancel}
-            >
-              Cancelar
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="login-btn"
+            style={{ fontSize: "1.1rem" }}
+          >
+            Ingresar
+          </button>
         </form>
 
         <div className="divider">

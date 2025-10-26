@@ -142,52 +142,13 @@
   text-decoration: underline;
 }
 
-.actions {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-}
-
-/* Dentro de .actions los botones comparten espacio */
-.actions .login-btn,
-.actions .cancel-btn {
-  flex: 1;
-  width: auto; /* evita que .login-btn: width:100% lo estire */
-  padding: 0.95rem;
-  font-size: 1rem;
-}
-
-/* Nuevo estilo para el botón cancelar, manteniendo la paleta */
-.cancel-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.cancel-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.18);
-}
-
-/* Mobile: apilar las acciones */
+/* Mobile tweaks (se mantienen los relacionados con login-box/social-login) */
 @media (max-width: 480px) {
   .login-box {
     padding: 2rem;
   }
   
   .social-login {
-    flex-direction: column;
-  }
-
-  .actions {
     flex-direction: column;
   }
 }
