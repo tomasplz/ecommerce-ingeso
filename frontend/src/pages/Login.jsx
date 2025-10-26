@@ -10,29 +10,57 @@ export default function Login() {
     alert(`Bienvenido, ${username}`);
   };
 
+  const handleCancel = (e) => {
+    e.preventDefault();
+    setUsername("");
+    setPassword("");
+    window.location.href = "/admin";
+  };
+
   return (
     <div className="login-wrapper">
-      <div className="login-box">
+      <div className="login-box" style={{ margin: "2rem 0" }}>
         <h2>Iniciar Sesión</h2>
         <form onSubmit={handleLogin}>
-          <input
-            type="text"
-            placeholder="Usuario"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit" className="login-btn">Ingresar</button>
+          <div className="input-group">
+            <input
+              type="text"
+              placeholder="Usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="actions">
+            <button
+              type="submit"
+              className="login-btn"
+              style={{ fontSize: "1.1rem" }}
+            >
+              Ingresar
+            </button>
+            <button
+              type="button"
+              className="cancel-btn"
+              onClick={handleCancel}
+            >
+              Cancelar
+            </button>
+          </div>
         </form>
 
-        <div className="divider">o ingresa con</div>
+        <div className="divider">
+          <span>o ingresa con</span>
+        </div>
+
         <div className="social-login">
           <button className="google-btn">Google</button>
           <button className="facebook-btn">Facebook</button>
