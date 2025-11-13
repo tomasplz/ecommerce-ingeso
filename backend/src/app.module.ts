@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { ProductosModule } from './productos/productos.module';
 import { PedidosModule } from './pedidos/pedidos.module';
+import { UsuarioModule } from './usuario/usuario.module';
 import { PrismaService } from './prisma.service';
 
 @Module({
@@ -9,6 +10,7 @@ import { PrismaService } from './prisma.service';
     AuthModule,
     ProductosModule,
     PedidosModule,
+    UsuarioModule,
   ],
   providers: [PrismaService],
   exports: [PrismaService],

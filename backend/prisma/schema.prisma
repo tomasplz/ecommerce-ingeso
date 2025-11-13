@@ -14,7 +14,12 @@ model Usuario {
   id                Int        @id @default(autoincrement())
   email             String     @unique
   password          String
+  nombre            String?
   role              String     @default("comprador") // admin, vendedor, comprador
+  deleted           Boolean    @default(false)
+  deletedAt         DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
   productosVendidos Producto[] @relation("Vendedor")
   pedidos           Pedido[]   @relation("Comprador")
 }
@@ -26,9 +31,13 @@ model Producto {
   precio      Float
   stock       Int           @default(0)
   categoria   String?
+  deleted     Boolean       @default(false)
+  deletedAt   DateTime?
   vendedorId  Int
   vendedor    Usuario       @relation("Vendedor", fields: [vendedorId], references: [id], onDelete: Cascade)
   pedidoItems PedidoItem[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
 }
 
 model Pedido {

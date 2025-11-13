@@ -3,6 +3,7 @@ import { ProductosService } from './productos.service';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from '../auth/public.decorator';
 
 @Controller('productos')
 export class ProductosController {
@@ -25,6 +26,12 @@ export class ProductosController {
   findByUsuario(@Request() req) {
     const vendedorId = +req.user.id;
     return this.productosService.findByUsuario(vendedorId);
+  }
+
+  @Public()
+  @Get('vendedor/:vendedorId')
+  findByVendedor(@Param('vendedorId') vendedorId: string) {
+    return this.productosService.findByUsuario(+vendedorId);
   }
 
   @Get(':id')

@@ -1,0 +1,190 @@
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top left, #232526, #414345);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 2rem; /* Increased padding for better spacing */
+}
+
+.login-box {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  padding: 3rem; /* Increased padding for better spacing */
+  width: 100%;
+  max-width: 380px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.login-box h2 {
+  margin-bottom: 2rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.input-group {
+  margin-bottom: 2rem; /* Increased margin for better spacing */
+}
+
+.login-box input {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 1rem 0.75rem; /* Adjusted padding for equal spacing */
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 1rem;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+.login-box input:last-child {
+  margin-bottom: 0;
+}
+
+.login-box input:focus {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.login-box input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1rem; /* Added margin for better spacing */
+  margin-bottom: 1.5rem;
+  background-color: #61dafb;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #4fc0e0;
+}
+
+.divider {
+  position: relative;
+  margin: 2rem 0; /* Increased margin for better spacing */
+  text-align: center;
+}
+
+.divider span {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.social-login {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem; /* Increased margin for better spacing */
+}
+
+.google-btn,
+.facebook-btn {
+  flex: 1;
+  padding: 0.875rem;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.google-btn {
+  background-color: #db4437;
+}
+
+.facebook-btn {
+  background-color: #3b5998;
+}
+
+.google-btn:hover {
+  background-color: #c33d2f;
+}
+
+.facebook-btn:hover {
+  background-color: #324c85;
+}
+
+.login-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem; /* Added margin for better spacing */
+}
+
+.login-links a {
+  color: #61dafb;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.login-links a:hover {
+  color: #4fc0e0;
+  text-decoration: underline;
+}
+
+.error-message {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.demo-credentials {
+  margin-top: 24px;
+  padding: 16px;
+  background: rgba(52, 152, 219, 0.1);
+  border-radius: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  text-align: left;
+}
+
+.demo-credentials strong {
+  color: #61dafb;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.demo-credentials p {
+  margin: 4px 0;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Mobile tweaks (se mantienen los relacionados con login-box/social-login) */
+@media (max-width: 480px) {
+  .login-box {
+    padding: 2rem;
+  }
+  
+  .social-login {
+    flex-direction: column;
+  }
+}

@@ -10,6 +10,9 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
+# Generar Prisma Client
+RUN pnpm prisma generate
+
 RUN pnpm run build
 
 FROM node:18-alpine AS production
@@ -22,6 +25,9 @@ COPY --from=builder /app/node_modules ./node_modules
 
 COPY --from=builder /app/package.json ./
 
+COPY --from=builder /app/prisma ./prisma
+
 EXPOSE 3000
 
-CMD ["node", "dist/main.js"]
+# Ejecutar migraciones y seed antes de iniciar la aplicación
+CMD npx prisma migrate deploy && node dist/seed.js && node dist/main.js

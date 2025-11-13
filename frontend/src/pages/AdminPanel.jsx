@@ -1,186 +1,210 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import "./AdminPanel.css";
 
 function AdminPanel() {
-  const [image, setImage] = useState(null);
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [nombre, setNombre] = useState("");
+  const [precio, setPrecio] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [stock, setStock] = useState("");
+  const [categoria, setCategoria] = useState("");
   const [products, setProducts] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { token, user } = useAuth();
+  const navigate = useNavigate();
 
+  // Verificar que el usuario sea vendedor
   useEffect(() => {
-    const stored = localStorage.getItem("products");
-    const parsed = stored ? JSON.parse(stored) : [];
-    setProducts(parsed);
+    if (!user || user.role !== 'vendedor') {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
-    // Si AdminList dejó un producto para editar, precargarlo aquí
-    const editId = localStorage.getItem("editProductId");
-    if (editId) {
-      // editId puede venir como string; comparar flexible
-      const p = parsed.find((x) => x.id === Number(editId) || String(x.id) === editId);
-      if (p) {
-        setEditingId(p.id);
-        setImage(p.image || null);
-        setName(p.name || "");
-        setPrice(p.price || "");
-        setDescription(p.description || "");
-        setQuantity(p.quantity || "");
+  // Cargar productos del vendedor
+  useEffect(() => {
+    if (token && user?.role === 'vendedor') {
+      loadProducts();
+    }
+  }, [token, user]);
+
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:3000/productos/mis-productos', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data);
+      } else {
+        setError('Error al cargar productos');
       }
-      localStorage.removeItem("editProductId");
-    }
-  }, []);
-
-  const saveProducts = (next) => {
-    setProducts(next);
-    localStorage.setItem("products", JSON.stringify(next));
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Para demo guardamos objectURL; en producción subirías el archivo al servidor
-      setImage(URL.createObjectURL(file));
+    } catch (err) {
+      setError('Error de conexión');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Al enviar: crear nuevo o actualizar si estamos editando
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editingId) {
-      const updated = {
-        id: editingId,
-        image,
-        name,
-        price,
-        description,
-        quantity, // añadido
-        status: "published",
-      };
-      const next = products.map((p) => (p.id === editingId ? updated : p));
-      saveProducts(next);
-      setEditingId(null);
-      alert("Producto actualizado (simulado)");
-    } else {
-      const newProduct = {
-        id: Date.now(),
-        image,
-        name,
-        price,
-        description,
-        quantity, // añadido
-        status: "published",
-      };
-      const next = [newProduct, ...products];
-      saveProducts(next);
-      alert("Producto publicado y añadido a la lista (simulado)");
+    setError("");
+    setLoading(true);
+
+    const productData = {
+      nombre,
+      precio: parseFloat(precio),
+      descripcion,
+      stock: parseInt(stock),
+      categoria: categoria || undefined,
+    };
+
+    try {
+      let response;
+      if (editingId) {
+        // Actualizar producto existente
+        response = await fetch(`http://localhost:3000/productos/${editingId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(productData),
+        });
+      } else {
+        // Crear nuevo producto
+        response = await fetch('http://localhost:3000/productos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(productData),
+        });
+      }
+
+      if (response.ok) {
+        alert(editingId ? 'Producto actualizado exitosamente' : 'Producto creado exitosamente');
+        clearForm();
+        loadProducts();
+      } else {
+        const error = await response.json();
+        setError(error.message || 'Error al guardar el producto');
+      }
+    } catch (err) {
+      setError('Error de conexión');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-
-    // limpiar formulario
-    setImage(null);
-    setName("");
-    setPrice("");
-    setDescription("");
-    setQuantity("");
   };
 
-  // Guardar borrador (crear o actualizar)
-  const handleDraft = (e) => {
-    e.preventDefault();
-    if (editingId) {
-      const updated = {
-        id: editingId,
-        image,
-        name,
-        price,
-        description,
-        quantity, // añadido
-        status: "draft",
-      };
-      const next = products.map((p) => (p.id === editingId ? updated : p));
-      saveProducts(next);
-      setEditingId(null);
-      alert("Borrador actualizado (simulado)");
-    } else {
-      const draft = {
-        id: Date.now(),
-        image,
-        name,
-        price,
-        description,
-        quantity, // añadido
-        status: "draft",
-      };
-      const next = [draft, ...products];
-      saveProducts(next);
-      alert("Borrador guardado y añadido a la lista (simulado)");
+  const handleDelete = async (id) => {
+    if (!window.confirm("¿Estás seguro de eliminar este producto?")) return;
+
+    try {
+      const response = await fetch(`http://localhost:3000/productos/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        alert('Producto eliminado exitosamente');
+        loadProducts();
+      } else {
+        alert('Error al eliminar el producto');
+      }
+    } catch (err) {
+      alert('Error de conexión');
+      console.error(err);
     }
-
-    setImage(null);
-    setName("");
-    setPrice("");
-    setDescription("");
-    setQuantity("");
   };
 
-  // Nuevo: eliminar producto de la lista
-  const handleDelete = (id) => {
-    if (!window.confirm("¿Eliminar este producto?")) return;
-    const next = products.filter((p) => p.id !== id);
-    saveProducts(next);
-  };
-
-  // Nuevo: cargar producto en el formulario para editar
-  const handleEdit = (id) => {
-    const p = products.find((x) => x.id === id);
-    if (!p) return;
-    setEditingId(id);
-    setImage(p.image || null);
-    setName(p.name || "");
-    setPrice(p.price || "");
-    setDescription(p.description || "");
-    setQuantity(p.quantity || "");
-    // opcional: llevar la vista al formulario
+  const handleEdit = (product) => {
+    setEditingId(product.id);
+    setNombre(product.nombre);
+    setPrecio(product.precio.toString());
+    setDescripcion(product.descripcion || "");
+    setStock(product.stock.toString());
+    setCategoria(product.categoria || "");
+    
+    // Scroll al formulario
     const formEl = document.querySelector(".form-section");
     if (formEl) formEl.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
+  const clearForm = () => {
+    setEditingId(null);
+    setNombre("");
+    setPrecio("");
+    setDescripcion("");
+    setStock("");
+    setCategoria("");
+  };
+
+  if (!user || user.role !== 'vendedor') {
+    return null;
+  }
+
   return (
     <div className="admin-container">
       <div className="admin-form">
-        {/* Nueva estructura: lista + formulario */}
+        <h2 className="panel-title">Panel de Vendedor</h2>
+        
+        {error && (
+          <div className="error-banner">
+            {error}
+          </div>
+        )}
+
         <div className="admin-grid">
+          {/* Lista de productos */}
           <div className="list-section">
             <div className="list-header">
-              <h3>Productos ({products.length})</h3>
+              <h3>Mis Productos ({products.length})</h3>
+              {loading && <span className="loading-indicator">Cargando...</span>}
             </div>
 
             {products.length === 0 ? (
-              <div className="empty-list">No hay productos todavía.</div>
+              <div className="empty-list">
+                {loading ? 'Cargando productos...' : 'No tienes productos todavía. ¡Crea tu primer producto!'}
+              </div>
             ) : (
               <div className="products-list">
                 {products.map((p) => (
                   <div className="product-item" key={p.id}>
                     <div className="thumb">
-                      {p.image ? (
-                        <img src={p.image} alt={p.name} />
-                      ) : (
-                        <div className="no-thumb">Sin imagen</div>
-                      )}
+                      <div className="no-thumb">📦</div>
                     </div>
                     <div className="meta">
-                      <div className="product-name">{p.name || "Sin nombre"}</div>
-                      <div className="product-quantity">Cantidad: {p.quantity ?? "-"}</div>
-                      <div className="product-price">{p.price ? `$ ${p.price}` : "-"}</div>
-                      <div className="product-status">{p.status}</div>
+                      <div className="product-name">{p.nombre}</div>
+                      <div className="product-quantity">Stock: {p.stock}</div>
+                      <div className="product-price">${p.precio}</div>
+                      {p.categoria && <div className="product-category">{p.categoria}</div>}
                     </div>
                     <div className="actions-col">
-                      <button className="edit-btn" onClick={() => handleEdit(p.id)}>
-                        Editar
+                      <button 
+                        className="edit-btn" 
+                        onClick={() => handleEdit(p)}
+                        disabled={loading}
+                      >
+                        ✏️ Editar
                       </button>
-                      <button className="delete-btn" onClick={() => handleDelete(p.id)}>
-                        Eliminar
+                      <button 
+                        className="delete-btn" 
+                        onClick={() => handleDelete(p.id)}
+                        disabled={loading}
+                      >
+                        🗑️ Eliminar
                       </button>
                     </div>
                   </div>
@@ -189,57 +213,94 @@ function AdminPanel() {
             )}
           </div>
 
-          {/* Formulario: adaptado desde el existente */}
+          {/* Formulario */}
           <form className="form-section" onSubmit={handleSubmit}>
-            <div className="top-section">
-              <div className="image-section">
-                <label className="image-label">
-                  {image ? (
-                    <img src={image} alt="Preview" className="preview-image" />
-                  ) : (
-                    <span>Subir imagen</span>
-                  )}
-                  <input type="file" accept="image/*" onChange={handleImageUpload} />
-                </label>
-              </div>
+            <h3 className="form-title">
+              {editingId ? '✏️ Editar Producto' : '➕ Nuevo Producto'}
+            </h3>
 
-              <div className="info-section">
+            <div className="form-content">
+              <div className="form-group">
+                <label>Nombre del producto *</label>
                 <input
                   type="text"
-                  placeholder="Nombre del producto"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <input
-                  type="number"
-                  placeholder="Precio"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                />
-                <input
-                  type="number"
-                  placeholder="Cantidad"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
-                  min="0"
+                  placeholder="Ej: Laptop HP Pavilion"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  required
+                  disabled={loading}
                 />
               </div>
-            </div>
 
-            <div className="bottom-section">
-              <textarea
-                placeholder="Descripción del producto"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Precio *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={precio}
+                    onChange={(e) => setPrecio(e.target.value)}
+                    required
+                    disabled={loading}
+                    min="0"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Stock *</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    value={stock}
+                    onChange={(e) => setStock(e.target.value)}
+                    required
+                    disabled={loading}
+                    min="0"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Categoría</label>
+                <input
+                  type="text"
+                  placeholder="Ej: Electrónica, Ropa, etc."
+                  value={categoria}
+                  onChange={(e) => setCategoria(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Descripción</label>
+                <textarea
+                  placeholder="Describe tu producto..."
+                  value={descripcion}
+                  onChange={(e) => setDescripcion(e.target.value)}
+                  disabled={loading}
+                  rows="4"
+                />
+              </div>
             </div>
 
             <div className="button-group">
-              <button type="button" className="draft-btn" onClick={handleDraft}>
-                {editingId ? "Guardar borrador" : "Guardar borrador"}
-              </button>
-              <button type="submit" className="publish-btn">
-                {editingId ? "Guardar cambios" : "Publicar"}
+              {editingId && (
+                <button 
+                  type="button" 
+                  className="cancel-btn" 
+                  onClick={clearForm}
+                  disabled={loading}
+                >
+                  Cancelar
+                </button>
+              )}
+              <button 
+                type="submit" 
+                className="publish-btn"
+                disabled={loading}
+              >
+                {loading ? 'Guardando...' : editingId ? '💾 Guardar Cambios' : '✨ Crear Producto'}
               </button>
             </div>
           </form>

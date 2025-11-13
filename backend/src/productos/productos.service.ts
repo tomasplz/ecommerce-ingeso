@@ -27,10 +27,14 @@ export class ProductosService {
 
   async findAll() {
     return this.prisma.producto.findMany({
+      where: {
+        deleted: false,
+      },
       include: { 
         vendedor: {
           select: {
             id: true,
+            nombre: true,
             email: true,
             role: true,
           }

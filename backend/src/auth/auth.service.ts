@@ -2,7 +2,6 @@ import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/co
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma.service';
-import { Usuario } from '../usuario/usuario.entity';
 
 @Injectable()
 export class AuthService {
@@ -24,10 +23,15 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
     };
   }
 
-  async register(email: string, password: string, role: string = 'comprador') {
+  async register(email: string, password: string, role: string = 'comprador', nombre?: string) {
     // Verificar si el email ya existe
     const existingUser = await this.prisma.usuario.findUnique({ where: { email } });
     if (existingUser) {
@@ -43,6 +47,7 @@ export class AuthService {
         email,
         password: hashedPassword,
         role,
+        nombre: nombre || email.split('@')[0], // Usar parte del email si no se proporciona nombre
       },
     });
 

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Request, UnauthorizedException } from '@nestjs/common';
+﻿import { Controller, Post, Body, UseGuards, Request, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { RegisterDto } from './dto/register.dto';
@@ -21,7 +21,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('protected')
-  getProfile(@Request() req) {
+  getProtectedResource(@Request() req) {
     return req.user;
   }
 }
